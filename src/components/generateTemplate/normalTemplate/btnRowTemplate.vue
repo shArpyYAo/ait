@@ -64,19 +64,19 @@ export default {
         view: {
           name: '$t(\'btn.view\')',
           clickMethod: 'handleDialog(\'view\')',
-          type: 'danger',
+          type: 'info',
           icon: 'el-icon-fa fa-search-plus'
         },
         edit: {
           name: '$t(\'btn.edit\')',
           clickMethod: 'handleDialog(\'edit\')',
-          type: 'info',
+          type: 'warning',
           icon: 'el-icon-fa fa-edit'
         },
         del: {
           name: '$t(\'btn.delete\')',
           clickMethod: 'handleDel()',
-          type: 'warning',
+          type: 'danger',
           icon: 'el-icon-fa fa-trash'
         }
       },
