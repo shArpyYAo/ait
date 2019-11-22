@@ -10,22 +10,7 @@
     <el-button type="text" @click="dialogShow('formDialogShow', '生成查询表单代码')">generateQueryForm</el-button>
     <el-button type="text" @click="dialogShow('btnRowDialogShow', '生成按钮行代码')">generateBtnRow</el-button>
     <el-button type="text" @click="dialogShow('tableDialogShow', '生成表格代码')">generateTable</el-button>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <div ref="scatter" style="width: 1800px;height:700px;"></div>
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
@@ -43,6 +28,8 @@
 </template>
 
 <script>
+import echarts from 'echarts'
+import axios from 'axios'
 import formTemplate from './normalTemplate/formTemplate'
 import showTemplate from './normalTemplate/showTemplate'
 import btnRowTemplate from './normalTemplate/btnRowTemplate'
@@ -69,10 +56,72 @@ export default {
                 formDialogShow : false,
                 btnRowDialogShow: false,
                 tableDialogShow: false
-            }
+            },
+            chart: null,
+            height: '650px'
         }
     },
+    mounted() {
+      this.chart = echarts.init(this.$refs.scatter)
+      this.setChart()
+    },
     methods: {
+      setChart() {
+        axios.get('http://192.168.2.210:8080/data.json')
+          .then(res => {
+            if (res) {
+              const data = res.data
+              const option = {
+                title: {
+                  text: 'Dispersion of house price based on the area',
+                  left: 'center',
+                  top: 0
+                },
+                visualMap: {
+                  min: 15202,
+                  max: 159980,
+                  dimension: 1,
+                  orient: 'vertical',
+                  right: 10,
+                  top: 'center',
+                  text: ['HIGH', 'LOW'],
+                  calculable: true,
+                  inRange: {
+                    color: ['red', 'yellow', 'blue']
+                  }
+                },
+                tooltip: {
+                  trigger: 'item',
+                  axisPointer: {
+                    type: 'cross'
+                  }
+                },
+                xAxis: [{
+                  type: 'value'
+                }],
+                yAxis: [{
+                  type: 'value'
+                }],
+                series: [{
+                  name: 'price-area',
+                  type: 'scatter',
+                  symbolSize: 3,
+                  // itemStyle: {
+                  //     normal: {
+                  //         borderWidth: 0.2,
+                  //         borderColor: '#fff'
+                  //     }
+                  // },
+                  data: data
+                }]
+              }
+              this.chart.setOption(option)
+            }
+          })
+          .catch(error => {
+            console.log('Get config properties file occur error', error)
+          })
+      },
         generate() {
             const dialogArr = Object.keys(this.dialogObj)
             dialogArr.forEach(dialog => {

@@ -12,6 +12,39 @@
         v-model="tableInShow">
       </el-input>
     </div>
+    <div>
+      <div>生成表格头部逻辑</div>
+      <el-input
+        type="textarea"
+        :rows="10"
+        placeholder="请输入内容"
+        v-model="tableTemplateHead">
+      </el-input>
+    </div>
+    <div>
+      <div>生成表格各行逻辑</div>
+      <div style="text-align: left">
+        btnArr.forEach(btnType => {
+      </div>
+      <el-input
+        type="textarea"
+        :rows="10"
+        placeholder="请输入内容"
+        v-model="tableTemplateCyclicLogic">
+      </el-input>
+      <div style="text-align: left">
+        })
+      </div>
+    </div>
+    <div>
+      <div>生成表格尾部逻辑</div>
+      <el-input
+        type="textarea"
+        :rows="10"
+        placeholder="请输入内容"
+        v-model="tableTemplateTail">
+      </el-input>
+    </div>
   </div>
 </template>
 
@@ -38,7 +71,7 @@ export default {
             prop: 'actLong',
             name: '长机型',
             sortable: true,
-            template: '',
+            template: '<el-button type="text" @click.stop="handleViewSigle(scope.row.id)">{{ scope.row.actLong }}</el-button>',
             formatter: null
           },
           {
@@ -76,7 +109,10 @@ export default {
           if (cellValue) return parseTime(cellValue)
           return cellValue
         }`
-      }
+      },
+      tableTemplateHead: ``,
+      tableTemplateCyclicLogic: ``,
+      tableTemplateTail: ``
     }
   },
   mounted () {
@@ -88,15 +124,31 @@ export default {
       this.table = JSON.parse(this.tableInShow)
       let str = ''
       if (this.table.bindingPaging === true) {
-        str += `<table-pagination ref="table" :tableData="${this.table.model}" :height="window.innerHeight - 320"
+        if (this.table.haveSelection === true) {
+          str += `<table-pagination ref="table" :tableData="${this.table.model}" :height="window.innerHeight - 320"
                 service @service-fn="handleService" @row-click="rowClick" @selection-change="selectionChange"
                 v-loading="listLoading">`
+        } else {
+          str += `<table-pagination ref="table" :tableData="${this.table.model}" :height="window.innerHeight - 320"
+                service @service-fn="handleService" v-loading="listLoading">`
+        }
         str += this.table.haveSelection === true ? `<el-table-column type="selection" width="43" />` : ``
         this.table.column.forEach(column => {
-          str += `<el-table-column prop="${column.prop}" label="${column.name}" align="center"`
-          str += column.sortable === true ? ` sortable="custom" ` : ``
-          str += column.formatter !== null ? ` :formatter="${column.formatter}" ` : ``
-          str += `/>`
+          if (column.template === '') {
+            str += `<el-table-column prop="${column.prop}" label="${column.name}" align="center"`
+            str += column.sortable === true ? ` sortable="custom" ` : ``
+            str += column.formatter !== null ? ` :formatter="${column.formatter}" ` : ``
+            str += `/>`
+          } else {
+            str += `<el-table-column label="${column.name}" align="center"`
+            str += column.sortable === true ? ` sortable="custom" ` : ``
+            str += column.formatter !== null ? ` :formatter="${column.formatter}" ` : ``
+            str += `>`
+            str += `<template slot-scope="scope">`
+            str += column.template
+            str += `</template>`
+            str += `</el-table-column>`
+          }
         })
         str += `</table-pagination>`
         console.log(str)
