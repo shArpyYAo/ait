@@ -5,7 +5,7 @@
         <el-radio :label="1">简单模板</el-radio>
         <el-radio :label="2">隐藏查询项的模板</el-radio>
       </el-radio-group>
-      <div>表单数据模板</div>
+      <div>查询表单数据模板</div>
       <div style="text-align: left">
         formSearch:
       </div>

@@ -10,7 +10,6 @@
     <el-button type="text" @click="dialogShow('formDialogShow', '生成查询表单代码')">generateQueryForm</el-button>
     <el-button type="text" @click="dialogShow('btnRowDialogShow', '生成按钮行代码')">generateBtnRow</el-button>
     <el-button type="text" @click="dialogShow('tableDialogShow', '生成表格代码')">generateTable</el-button>
-    <div ref="scatter" style="width: 1800px;height:700px;"></div>
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
@@ -28,8 +27,6 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-import axios from 'axios'
 import formTemplate from './normalTemplate/formTemplate'
 import showTemplate from './normalTemplate/showTemplate'
 import btnRowTemplate from './normalTemplate/btnRowTemplate'
@@ -61,67 +58,8 @@ export default {
             height: '650px'
         }
     },
-    mounted() {
-      this.chart = echarts.init(this.$refs.scatter)
-      this.setChart()
-    },
+    mounted() {},
     methods: {
-      setChart() {
-        axios.get('http://192.168.2.210:8080/data.json')
-          .then(res => {
-            if (res) {
-              const data = res.data
-              const option = {
-                title: {
-                  text: 'Dispersion of house price based on the area',
-                  left: 'center',
-                  top: 0
-                },
-                visualMap: {
-                  min: 15202,
-                  max: 159980,
-                  dimension: 1,
-                  orient: 'vertical',
-                  right: 10,
-                  top: 'center',
-                  text: ['HIGH', 'LOW'],
-                  calculable: true,
-                  inRange: {
-                    color: ['red', 'yellow', 'blue']
-                  }
-                },
-                tooltip: {
-                  trigger: 'item',
-                  axisPointer: {
-                    type: 'cross'
-                  }
-                },
-                xAxis: [{
-                  type: 'value'
-                }],
-                yAxis: [{
-                  type: 'value'
-                }],
-                series: [{
-                  name: 'price-area',
-                  type: 'scatter',
-                  symbolSize: 3,
-                  // itemStyle: {
-                  //     normal: {
-                  //         borderWidth: 0.2,
-                  //         borderColor: '#fff'
-                  //     }
-                  // },
-                  data: data
-                }]
-              }
-              this.chart.setOption(option)
-            }
-          })
-          .catch(error => {
-            console.log('Get config properties file occur error', error)
-          })
-      },
         generate() {
             const dialogArr = Object.keys(this.dialogObj)
             dialogArr.forEach(dialog => {
@@ -133,6 +71,9 @@ export default {
             if (this.$refs.btnRowTemplate) {
                 this.templateInShow = this.$refs.btnRowTemplate.generateBtnRowTemplate()
             }
+          if (this.$refs.tableTemplate) {
+            this.templateInShow = this.$refs.tableTemplate.generateTableTemplate()
+          }
             this.templateShow = true
         },
         dialogShow(type, title) {

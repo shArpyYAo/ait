@@ -24,7 +24,7 @@
     <div>
       <div>生成表格各行逻辑</div>
       <div style="text-align: left">
-        btnArr.forEach(btnType => {
+        table.column.forEach(btnType => {
       </div>
       <el-input
         type="textarea"
@@ -104,54 +104,61 @@ export default {
           }
         ]
       },
-      templateMethods: {
-        formatterTime: `(row, column, cellValue) => {
-          if (cellValue) return parseTime(cellValue)
-          return cellValue
-        }`
-      },
-      tableTemplateHead: ``,
-      tableTemplateCyclicLogic: ``,
-      tableTemplateTail: ``
+      tableTemplateHead:
+        `
+         str += \`<table-pagination ref="table" :tableData="\`;
+         str += table.model;str += \`" \`;
+         if (table.haveSelection === true) {
+          str += \`:height="tableHeight" service @service-fn="handleService" @row-click="rowClick" @selection-change="selectionChange" v-loading="listLoading">\`;
+         } else {
+          str += \`:height="tableHeight" service @service-fn="handleService" v-loading="listLoading">\`;
+         }
+         str += table.haveSelection === true ? \`<el-table-column type="selection" width="43" />\` : \`\`
+         return str;
+        `,
+      tableTemplateCyclicLogic:
+        `
+          if (column.template === '') {
+            str += \`<el-table-column prop="\`;
+            str += column.prop;str += \`" label="\`;
+            str += column.name;str += \`" align="center"\`;
+            str += column.sortable === true ? \` sortable="custom" \` : \`\`;
+            str += column.formatter !== null ? (\` :formatter="\` + column.formatter + \`" \`) : \`\`;
+            str += \`/>\`;
+          } else {
+            str += \`<el-table-column label="\`;
+            str += column.name;str += \`" align="center"\`;
+            str += column.sortable === true ? \` sortable="custom" \` : \`\`;
+            str += column.formatter !== null ? (\` :formatter="\` + column.formatter + \`" \`) : \`\`;
+            str += \`>\`;
+            str += \`<template slot-scope="scope">\`;
+            str += column.template;
+            str += \`</template>\`;
+            str += \`</el-table-column>\`;
+          }
+          return str;
+        `,
+      tableTemplateTail: `return \`</table-pagination>\`;`
     }
   },
   mounted () {
     this.tableInShow = JSON.stringify(this.table, null, 2)
-    this.generateTableTemplate()
   },
   methods: {
     generateTableTemplate() {
       this.table = JSON.parse(this.tableInShow)
       let str = ''
       if (this.table.bindingPaging === true) {
-        if (this.table.haveSelection === true) {
-          str += `<table-pagination ref="table" :tableData="${this.table.model}" :height="window.innerHeight - 320"
-                service @service-fn="handleService" @row-click="rowClick" @selection-change="selectionChange"
-                v-loading="listLoading">`
-        } else {
-          str += `<table-pagination ref="table" :tableData="${this.table.model}" :height="window.innerHeight - 320"
-                service @service-fn="handleService" v-loading="listLoading">`
-        }
-        str += this.table.haveSelection === true ? `<el-table-column type="selection" width="43" />` : ``
+        const headLogic = new Function('str', 'table', this.tableTemplateHead)
+        str = headLogic(str, this.table)
+        let CyclicLogic = new Function('str', 'column', this.tableTemplateCyclicLogic)
+        let CyclicStr = ''
         this.table.column.forEach(column => {
-          if (column.template === '') {
-            str += `<el-table-column prop="${column.prop}" label="${column.name}" align="center"`
-            str += column.sortable === true ? ` sortable="custom" ` : ``
-            str += column.formatter !== null ? ` :formatter="${column.formatter}" ` : ``
-            str += `/>`
-          } else {
-            str += `<el-table-column label="${column.name}" align="center"`
-            str += column.sortable === true ? ` sortable="custom" ` : ``
-            str += column.formatter !== null ? ` :formatter="${column.formatter}" ` : ``
-            str += `>`
-            str += `<template slot-scope="scope">`
-            str += column.template
-            str += `</template>`
-            str += `</el-table-column>`
-          }
+          CyclicStr = CyclicLogic(CyclicStr, column)
         })
-        str += `</table-pagination>`
-        console.log(str)
+        str += CyclicStr
+        let footLogic = new Function(this.tableTemplateTail)
+        str += footLogic()
         return str
       }
     }
