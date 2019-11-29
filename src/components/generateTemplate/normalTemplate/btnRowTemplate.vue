@@ -5,7 +5,7 @@
       <div style="text-align: left">
         btn:
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -14,7 +14,7 @@
     </div>
     <div>
       <div>生成模板头部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -26,7 +26,7 @@
       <div style="text-align: left">
         btnArr.forEach(btnType => {
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -38,7 +38,7 @@
     </div>
     <div>
       <div>生成模板尾部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"

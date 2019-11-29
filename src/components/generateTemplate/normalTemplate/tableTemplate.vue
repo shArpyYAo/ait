@@ -5,7 +5,7 @@
       <div style="text-align: left">
         table:
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -14,7 +14,7 @@
     </div>
     <div>
       <div>生成表格头部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -26,7 +26,7 @@
       <div style="text-align: left">
         table.column.forEach(btnType => {
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -38,7 +38,7 @@
     </div>
     <div>
       <div>生成表格尾部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"

@@ -9,7 +9,7 @@
       <div style="text-align: left">
         formSearch:
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -18,7 +18,7 @@
     </div>
     <div>
       <div>生成模板头部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -30,7 +30,7 @@
       <div style="text-align: left">
         this.formSearch.data.forEach(obj => {
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -42,7 +42,7 @@
     </div>
     <div v-if="templateRadio === 2">
       <div>查询项与隐藏查询项的承上启下逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -54,7 +54,7 @@
       <div style="text-align: left">
         this.formSearch.hidingData.forEach(obj => {
       </div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
@@ -66,7 +66,7 @@
     </div>
     <div>
       <div>生成模板尾部逻辑</div>
-      <el-input
+      <el-input style="width: 30vw"
         type="textarea"
         :rows="10"
         placeholder="请输入内容"
